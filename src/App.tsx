@@ -189,6 +189,46 @@ function App() {
               </ul>
             </div>
           </div>
+          <div className="border-t border-gray-200 mt-8 pt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <h4 className="font-semibold text-gray-900 mb-3">About Us</h4>
+              <p className="text-gray-600 text-sm">
+                We are a distributed team of researchers, traders, and product builders
+                who believe prediction markets make the future more transparent. Follow
+                along as we ship new data tools, curated insights, and trading
+                experiences every week.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold text-gray-900 mb-3">Contact Us</h4>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li>
+                  Email:{' '}
+                  <a
+                    href="mailto:support@predicthub.io"
+                    className="text-primary-600 hover:text-primary-700 font-medium"
+                  >
+                    support@predicthub.io
+                  </a>
+                </li>
+                <li>
+                  Partnerships:{' '}
+                  <a
+                    href="mailto:partners@predicthub.io"
+                    className="text-primary-600 hover:text-primary-700 font-medium"
+                  >
+                    partners@predicthub.io
+                  </a>
+                </li>
+                <li>
+                  Community:{' '}
+                  <a href="#" className="text-primary-600 hover:text-primary-700 font-medium">
+                    Join Discord
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
           <div className="border-t border-gray-200 mt-8 pt-8 text-center text-sm text-gray-600">
             © 2025 PredictHub. All rights reserved.
           </div>
