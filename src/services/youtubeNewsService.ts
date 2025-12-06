@@ -89,7 +89,6 @@ function getChannelForTopic(topic: string): string {
   if (lower.includes('tech') || lower.includes('ai')) {
     return 'Tech Trends';
   }
-  
   return 'News Today';
 }
 
