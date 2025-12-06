@@ -1,260 +1,93 @@
-# PredictHub - Prediction Market Platform
+# PredictHub
 
-A modern, real-time prediction market platform for trading on future events including cryptocurrency prices, stock movements, political outcomes, sports events, and weather predictions with **comprehensive Malaysian rainfall analysis**.
+A modern, real-time prediction market for trading on crypto, equities, politics, sports, news, and Malaysian rainfall insights—all backed by live data integrations and a polished React + Tailwind experience.
 
-## 🌐 Live Demo
+## Live Demo
+- **Production**: [https://cursor-2025-prediction-market.vercel.app](https://cursor-2025-prediction-market.vercel.app)
+- Deployed on Vercel with automatic builds from `main`
 
-Live on Vercel: [https://cursor-2025-prediction-market.vercel.app](https://cursor-2025-prediction-market.vercel.app)
+## Product Highlights
+- **Real-time trading desk** with live probabilities, liquidity, and volume tracking across every market type
+- **Wallet-first UX** using WalletConnect (MetaMask, Coinbase Wallet, Rabby) with onboarding guardrails
+- **Etherscan + CoinGecko data fusion** for ETH pricing, gas metrics, and trending crypto markets refreshed every minute
+- **Malaysian rainfall intelligence hub** delivering state-level telemetry, AI-driven predictions, and multi-chart storytelling
+- **Actionable news and research**: curated feeds, category filters, and quick links keep traders informed without leaving the app
+- **Responsive, accessible UI** built with React 18, TypeScript, Tailwind CSS, and Recharts for data visualization
 
-## 🚀 Features
+## Core Experiences
+### Multi-Market Trading
+Markets cover crypto, equities, politics, sports, weather, and tech news. Each card surfaces price targets, odds, liquidity, and settlement dates, while the trade modal exposes profit/loss projections before order submission.
 
-- **🔗 Etherscan API Integration**: Real-time Ethereum price updates every minute
-- **💼 Wallet Connect**: Connect with MetaMask, Coinbase Wallet, and Rabby
-- **Real-time Crypto Price Integration**: Live cryptocurrency prices from CoinGecko API + Etherscan
-- **📊 Malaysian Rainfall Analysis**: Comprehensive rain tracking and predictions across all Malaysian states
-- **Interactive Charts**: Beautiful visualizations using Recharts
-- **Multiple Market Categories**: 
-  - 💰 Crypto Markets
-  - 📈 Stock Markets
-  - 🏛️ Political Events
-  - ⚽ Sports Predictions
-  - 🌤️ Weather Forecasts
-  - 📰 News & Technology
-- **Beautiful UI**: Modern, responsive design built with React and Tailwind CSS
-- **Live Updates**: Auto-refresh market data every 5 minutes
-- **Interactive Trading**: Intuitive trade modal with profit/loss calculations
-- **Trending Markets**: Highlighted popular markets
-- **Search & Filter**: Easy navigation through market categories
+### Malaysian Rainfall Analysis
+A dedicated `/rain-analysis` route aggregates Apify + OpenWeather data into bar, line, and pie charts, outlines 7-day forecasts for 14 states, and calls out wettest/driest regions to support commodities and climate-linked markets.
 
-## 🔗 Etherscan Integration
+### Research Layer
+`/news`, `/latest-news`, and `/crypto-analysis` pages consolidate blog posts, trending alerts, and video summaries sourced from custom services so users can move from insight to trade in one flow.
 
-The platform features comprehensive Etherscan API integration for real-time Ethereum data:
+## Integrations & Data Sources
+| Domain | Provider | Usage |
+| --- | --- | --- |
+| Ethereum metrics | Etherscan API | ETH price, total supply, gas oracle, whale tracking |
+| Crypto pricing | CoinGecko API | Live prices and volatility inputs for markets |
+| Weather & rainfall | Apify weather-fetcher, OpenWeatherMap | Real-time rainfall, humidity, temperature forecasts |
+| News feeds | Custom services (`lindy`, `mysticalNews`, `tweetNews`, `youtubeNews`) | Curated news, sentiment, and trending topics |
 
-### Features:
-- **Live ETH Price**: Updates every 60 seconds
-- **Market Cap Calculation**: Real-time ETH supply × current price
-- **Gas Price Tracking**: SafeLow, Standard, Fast, and Fastest gas prices
-- **Network Activity**: Transaction count and active addresses
-- **Network Utilization**: Real-time network usage metrics
+## Architecture & Tech Stack
+- **Framework**: React 18 + TypeScript, Vite build system, React Router v6
+- **Styling & UI**: Tailwind CSS, Lucide React icons, custom chart components
+- **State & Data**: Wagmi v3 + Viem for wallet integrations, Axios for HTTP services
+- **Tooling**: ESLint, PostCSS, Vite preview/build scripts, Vercel deployment
 
-### API Endpoints Used:
-- `ethprice` - Current ETH/USD price
-- `ethsupply` - Total ETH supply
-- `gasoracle` - Current gas prices
-- `tokenbalance` - ERC-20 token balances (for whale tracking)
-
-### Update Frequency:
-- **ETH Price**: Every 1 minute (60 seconds)
-- **Market Data**: Every 5 minutes
-- **Rainfall Data**: Every 5 minutes
-
-The header displays live ETH price with "(Etherscan)" badge to indicate the data source.
-
-## 🌧️ Rain Analysis Features
-
-The platform includes a dedicated **Malaysian Rainfall Analysis** page featuring:
-
-- **Real-time Data**: Fetches weather data using Apify's weather-fetcher
-- **State-by-State Analysis**: Detailed rainfall data for all 14 Malaysian states
-- **Interactive Charts**:
-  - Bar chart showing rainfall by state
-  - Line chart for rain probability predictions
-  - Temperature and humidity comparisons
-  - Pie chart for rainfall distribution
-- **7-Day Forecasts**: Future rainfall predictions for each state
-- **Smart Predictions**: AI-powered rain probability calculations based on:
-  - Historical rainfall patterns
-  - Current humidity levels
-  - Temperature trends
-  - Meteorological forecasts
-- **Extremes Tracking**: Identifies wettest and driest states
-- **Total Rainfall Metrics**: Aggregated data across Malaysia
-
-Access the rainfall analysis by clicking the **"Total Rainfall MY"** stat in the header or navigating to `/rain-analysis`.
-
-## 🛠️ Tech Stack
-
-- **Frontend**: React 18 + TypeScript
-- **Routing**: React Router v6
-- **Wallet Integration**: Wagmi v3 + Viem
-- **Styling**: Tailwind CSS
-- **Charts**: Recharts
-- **Build Tool**: Vite
-- **Icons**: Lucide React
-- **API Integration**: Axios
-- **Data Sources**: 
-  - **Etherscan API** (Ethereum price, gas prices, network activity)
-  - CoinGecko API (crypto prices)
-  - Apify weather-fetcher (rainfall data)
-  - OpenWeatherMap API (weather data - optional)
-
-## 📦 Installation
-
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd cursor-2025-prediction-market
+## Project Structure
+```
+src/
+├─ App.tsx               # Page composition + layout shell
+├─ main.tsx              # Entry point with router + providers
+├─ index.css             # Global Tailwind layer
+├─ components/           # Header, CategoryFilter, MarketCard, TradeModal, WalletConnectModal
+├─ pages/                # Markets, News, RainAnalysis, LatestNews, CryptoAnalysis
+├─ data/                 # Static seeds for markets and blog posts
+├─ services/             # API clients (crypto, weather, news, rainfall, etc.)
+├─ types/                # Shared TypeScript contracts
+├─ config/wagmi.ts       # Wallet connector configuration
 ```
 
-2. Install dependencies:
-```bash
-npm install
-```
+## Getting Started
+1. **Clone & install**
+   ```bash
+   git clone <repository-url>
+   cd cursor-2025-prediction-market
+   npm install
+   ```
+2. **Set environment variables** (optional if you prefer mock data):
+   ```env
+   VITE_ETHERSCAN_API_KEY=<your-etherscan-api-key>
+   VITE_APIFY_API_KEY=<your-apify-api-key>
+   VITE_WEATHER_API_KEY=<your-openweather-api-key>
+   ```
+3. **Run locally**
+   ```bash
+   npm run dev
+   ```
+   The dev server defaults to `http://localhost:3000`.
 
-3. (Optional) Set up environment variables:
-Create a `.env` file in the root directory:
-```env
-# Etherscan API Key (for real-time ETH price updates)
-VITE_ETHERSCAN_API_KEY=X4BPCXS9KYCRECS5S34PEAUA6YXYGJ9727
-
-# For rainfall analysis with real data
-VITE_APIFY_API_KEY=your_apify_api_key
-
-# Optional - for additional weather data
-VITE_WEATHER_API_KEY=your_openweathermap_api_key
-```
-
-**Note**: The app works without API keys using mock data. The Etherscan API key is included in the code for immediate use.
-
-4. Start the development server:
-```bash
-npm run dev
-```
-
-The app will open at `http://localhost:3000`
-
-## 🏗️ Build for Production
-
+## Production Build & Preview
 ```bash
 npm run build
-```
-
-Preview the production build:
-```bash
 npm run preview
 ```
 
-## 📁 Project Structure
+## Available Scripts
+- `npm run dev` – launch Vite dev server
+- `npm run build` – produce an optimized production bundle
+- `npm run preview` – serve the production build locally
+- `npm run lint` – run ESLint with the configured ruleset
 
-```
-src/
-├── components/         # React components
-│   ├── Header.tsx
-│   ├── CategoryFilter.tsx
-│   ├── MarketCard.tsx
-│   └── TradeModal.tsx
-├── data/              # Static data
-│   ├── markets.ts
-│   └── blogPosts.ts
-├── services/          # API services
-│   ├── cryptoService.ts
-│   └── weatherService.ts
-├── types/             # TypeScript types
-│   └── index.ts
-├── App.tsx            # Main app component
-├── main.tsx           # App entry point
-└── index.css          # Global styles
-```
+## Contributing
+Issues and pull requests are welcome. Please include context, screenshots (if UI-related), and a short test plan when proposing changes.
 
-## 🎯 Available Scripts
+## License
+ISC License. See `LICENSE` (or the license header in package.json) for details.
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
-
-## 🔑 Key Features Explained
-
-### Real-time Crypto Updates
-The app fetches live cryptocurrency prices from CoinGecko and automatically updates market probabilities based on:
-- Current price vs target price
-- Time remaining until market closes
-- 24-hour price change
-
-### Dynamic Probability Calculation
-Market probabilities are calculated using:
-- Price percentage change needed
-- Time factor (more time = higher probability)
-- Historical volatility patterns
-
-### Weather Predictions
-Weather markets integrate with OpenWeatherMap to provide:
-- Current temperature and conditions
-- Forecast data
-- Probability calculations for weather events
-
-## 🌐 API Integration
-
-### CoinGecko (Crypto Prices)
-- Free tier: 50 calls/minute
-- No API key required
-- Supported cryptocurrencies: BTC, ETH, SOL, XRP, and more
-
-### OpenWeatherMap (Weather Data)
-- Free tier: 1000 calls/day
-- API key required
-- Coverage: Malaysian cities and global locations
-
-## 🎨 Customization
-
-### Adding New Markets
-Edit `src/data/markets.ts` to add new prediction markets:
-
-```typescript
-{
-  id: 'unique-market-id',
-  title: 'Your Market Question',
-  description: 'Detailed description',
-  category: 'crypto', // or 'stocks', 'politics', etc.
-  yesPrice: 0.65,
-  noPrice: 0.35,
-  volume: 1000000,
-  liquidity: 500000,
-  endDate: '2026-12-31',
-  tags: ['Tag1', 'Tag2']
-}
-```
-
-### Changing Colors
-Update Tailwind colors in `tailwind.config.js`:
-
-```javascript
-colors: {
-  primary: {
-    // Your custom color palette
-  }
-}
-```
-
-## 📊 Market Categories
-
-1. **Crypto**: Predictions on cryptocurrency prices (BTC, ETH, SOL, etc.)
-2. **Stocks**: Stock market predictions (AAPL, TSLA, NVDA, etc.)
-3. **Politics**: Election outcomes and political events
-4. **Sports**: Sports championship and tournament predictions
-5. **Weather**: Weather events and climate predictions
-6. **News**: Technology and news event predictions
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📝 License
-
-ISC License
-
-## 🙏 Acknowledgments
-
-- CoinGecko for cryptocurrency price data
-- OpenWeatherMap for weather data
-- Lucide for beautiful icons
-- Tailwind CSS for styling utilities
-
-## 📧 Contact
-
-For questions or support, please open an issue on GitHub.
-
----
-
-**Built with ❤️ using React, TypeScript, and Tailwind CSS**
-
+## Support
+For questions or feedback, please open an issue or reach out via the contact method listed in the repository.
