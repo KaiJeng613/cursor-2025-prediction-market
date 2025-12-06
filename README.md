@@ -1,10 +1,12 @@
 # PredictHub - Prediction Market Platform
 
-A modern, real-time prediction market platform for trading on future events including cryptocurrency prices, stock movements, political outcomes, sports events, and weather predictions.
+A modern, real-time prediction market platform for trading on future events including cryptocurrency prices, stock movements, political outcomes, sports events, and weather predictions with **comprehensive Malaysian rainfall analysis**.
 
 ## 🚀 Features
 
 - **Real-time Crypto Price Integration**: Live cryptocurrency prices from CoinGecko API
+- **📊 Malaysian Rainfall Analysis**: Comprehensive rain tracking and predictions across all Malaysian states
+- **Interactive Charts**: Beautiful visualizations using Recharts
 - **Multiple Market Categories**: 
   - 💰 Crypto Markets
   - 📈 Stock Markets
@@ -18,16 +20,41 @@ A modern, real-time prediction market platform for trading on future events incl
 - **Trending Markets**: Highlighted popular markets
 - **Search & Filter**: Easy navigation through market categories
 
+## 🌧️ Rain Analysis Features
+
+The platform includes a dedicated **Malaysian Rainfall Analysis** page featuring:
+
+- **Real-time Data**: Fetches weather data using Apify's weather-fetcher
+- **State-by-State Analysis**: Detailed rainfall data for all 14 Malaysian states
+- **Interactive Charts**:
+  - Bar chart showing rainfall by state
+  - Line chart for rain probability predictions
+  - Temperature and humidity comparisons
+  - Pie chart for rainfall distribution
+- **7-Day Forecasts**: Future rainfall predictions for each state
+- **Smart Predictions**: AI-powered rain probability calculations based on:
+  - Historical rainfall patterns
+  - Current humidity levels
+  - Temperature trends
+  - Meteorological forecasts
+- **Extremes Tracking**: Identifies wettest and driest states
+- **Total Rainfall Metrics**: Aggregated data across Malaysia
+
+Access the rainfall analysis by clicking the **"Total Rainfall MY"** stat in the header or navigating to `/rain-analysis`.
+
 ## 🛠️ Tech Stack
 
 - **Frontend**: React 18 + TypeScript
+- **Routing**: React Router v6
 - **Styling**: Tailwind CSS
+- **Charts**: Recharts
 - **Build Tool**: Vite
 - **Icons**: Lucide React
 - **API Integration**: Axios
 - **Data Sources**: 
   - CoinGecko API (crypto prices)
-  - OpenWeatherMap API (weather data)
+  - Apify weather-fetcher (rainfall data)
+  - OpenWeatherMap API (weather data - optional)
 
 ## 📦 Installation
 
@@ -45,8 +72,14 @@ npm install
 3. (Optional) Set up environment variables:
 Create a `.env` file in the root directory:
 ```env
+# For rainfall analysis with real data
+VITE_APIFY_API_KEY=your_apify_api_key
+
+# Optional - for additional weather data
 VITE_WEATHER_API_KEY=your_openweathermap_api_key
 ```
+
+**Note**: The app works without API keys using mock data. For production use with real-time rainfall data, get a free Apify API key from https://apify.com/
 
 4. Start the development server:
 ```bash
