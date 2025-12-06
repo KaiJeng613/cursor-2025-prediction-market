@@ -1,0 +1,38 @@
+{
+  "name": "cursor-2025-prediction-market",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A modern prediction market platform for stocks, crypto, and news events with real-time price integration",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+  },
+  "dependencies": {
+    "apify-client": "^2.20.0",
+    "lucide-react": "^0.294.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.27",
+    "@types/react-dom": "^18.3.7",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "autoprefixer": "^10.4.22",
+    "eslint": "^8.57.1",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.18",
+    "typescript": "^5.9.3",
+    "vite": "^5.4.21"
+  },
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
