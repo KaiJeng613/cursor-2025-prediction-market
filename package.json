@@ -10,13 +10,16 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.90.12",
     "apify-client": "^2.20.0",
     "axios": "^1.6.2",
     "lucide-react": "^0.294.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.30.2",
-    "recharts": "^2.15.4"
+    "recharts": "^2.15.4",
+    "viem": "^2.41.2",
+    "wagmi": "^3.1.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.27",

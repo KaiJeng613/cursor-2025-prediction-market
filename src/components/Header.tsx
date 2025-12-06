@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, TrendingUp, Droplets, DollarSign, RefreshCw } from 'lucide-react';
+import { Search, TrendingUp, Droplets, DollarSign, RefreshCw, Wallet, LogOut } from 'lucide-react';
+import { useAccount, useDisconnect, useEnsName } from 'wagmi';
+import { WalletConnectModal } from './WalletConnectModal';
 
 interface HeaderProps {
   searchQuery: string;
@@ -23,6 +25,15 @@ export const Header: React.FC<HeaderProps> = ({
   totalRainfall = 0,
   ethPrice = 0
 }) => {
+  const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
+  const { address, isConnected } = useAccount();
+  const { disconnect } = useDisconnect();
+  const { data: ensName } = useEnsName({ address });
+
+  const formatAddress = (addr: string) => {
+    return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+  };
+
   const formatLastUpdated = () => {
     if (!lastUpdated) return '';
     const now = new Date();
@@ -89,9 +100,31 @@ export const Header: React.FC<HeaderProps> = ({
               <div className="text-sm text-primary-100">Active Markets</div>
               <div className="text-xl font-bold">1,247</div>
             </div>
-            <button className="bg-white text-primary-600 px-6 py-2 rounded-lg font-semibold hover:bg-primary-50 transition-colors">
-              Connect Wallet
-            </button>
+            {isConnected && address ? (
+              <div className="flex items-center gap-3">
+                <div className="text-right">
+                  <div className="text-sm text-primary-100">Connected</div>
+                  <div className="text-sm font-bold">
+                    {ensName || formatAddress(address)}
+                  </div>
+                </div>
+                <button
+                  onClick={() => disconnect()}
+                  className="bg-red-500/90 text-white p-3 rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2"
+                  title="Disconnect Wallet"
+                >
+                  <LogOut size={18} />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setIsWalletModalOpen(true)}
+                className="bg-white text-primary-600 px-6 py-2 rounded-lg font-semibold hover:bg-primary-50 transition-colors flex items-center gap-2"
+              >
+                <Wallet size={18} />
+                Connect Wallet
+              </button>
+            )}
           </div>
         </div>
 
@@ -140,6 +173,11 @@ export const Header: React.FC<HeaderProps> = ({
           </Link>
         </div>
       </div>
+      
+      <WalletConnectModal
+        isOpen={isWalletModalOpen}
+        onClose={() => setIsWalletModalOpen(false)}
+      />
     </header>
   );
 };

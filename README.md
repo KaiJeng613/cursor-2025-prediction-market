@@ -5,6 +5,7 @@ A modern, real-time prediction market platform for trading on future events incl
 ## 🚀 Features
 
 - **🔗 Etherscan API Integration**: Real-time Ethereum price updates every minute
+- **💼 Wallet Connect**: Connect with MetaMask, Coinbase Wallet, and Rabby
 - **Real-time Crypto Price Integration**: Live cryptocurrency prices from CoinGecko API + Etherscan
 - **📊 Malaysian Rainfall Analysis**: Comprehensive rain tracking and predictions across all Malaysian states
 - **Interactive Charts**: Beautiful visualizations using Recharts
@@ -45,6 +46,36 @@ The platform features comprehensive Etherscan API integration for real-time Ethe
 
 The header displays live ETH price with "(Etherscan)" badge to indicate the data source.
 
+## 💼 Wallet Connection
+
+PredictHub supports multiple wallet providers for seamless Web3 integration:
+
+### Supported Wallets:
+- **🦊 MetaMask**: Most popular Ethereum wallet
+- **🔵 Coinbase Wallet**: Trusted wallet from Coinbase
+- **🐰 Rabby**: Advanced wallet with better UX
+
+### Features:
+- One-click wallet connection
+- Display connected address in header
+- ENS name resolution support
+- Easy disconnect functionality
+- Network switching support (Mainnet/Sepolia)
+
+### How to Connect:
+1. Click the "Connect Wallet" button in the header
+2. Choose your preferred wallet (MetaMask, Coinbase, or Rabby)
+3. Approve the connection in your wallet
+4. Your address will be displayed in the header
+
+### First Time Setup:
+If you don't have a wallet yet:
+- **MetaMask**: https://metamask.io/download/
+- **Coinbase Wallet**: https://www.coinbase.com/wallet
+- **Rabby**: https://rabby.io/
+
+The wallet integration uses Wagmi v3 + Viem for secure and reliable Web3 connections.
+
 ## 🌧️ Rain Analysis Features
 
 The platform includes a dedicated **Malaysian Rainfall Analysis** page featuring:
@@ -71,6 +102,7 @@ Access the rainfall analysis by clicking the **"Total Rainfall MY"** stat in the
 
 - **Frontend**: React 18 + TypeScript
 - **Routing**: React Router v6
+- **Wallet Integration**: Wagmi v3 + Viem
 - **Styling**: Tailwind CSS
 - **Charts**: Recharts
 - **Build Tool**: Vite
