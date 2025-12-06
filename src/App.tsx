@@ -6,6 +6,9 @@ import { TradeModal } from './components/TradeModal';
 import { sampleMarkets } from './data/markets';
 import { Market, MarketCategory } from './types';
 import { updateCryptoMarketPredictions } from './services/cryptoService';
+import type { BlogPost } from './data/blogPosts';
+import { blogPosts } from './data/blogPosts';
+import { fetchLatestWeatherNews } from './services/weatherNewsService';
 
 function App() {
   const [selectedCategory, setSelectedCategory] = useState<MarketCategory | 'all'>('all');
@@ -14,6 +17,7 @@ function App() {
   const [markets, setMarkets] = useState<Market[]>(sampleMarkets);
   const [isLoading, setIsLoading] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [weatherNews, setWeatherNews] = useState<BlogPost[]>([]);
 
   // Fetch and update crypto prices on mount and periodically
   useEffect(() => {
@@ -37,6 +41,30 @@ function App() {
     const interval = setInterval(updatePrices, 5 * 60 * 1000);
 
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadWeatherNews = async () => {
+      const latestNews = await fetchLatestWeatherNews();
+      if (!isMounted) return;
+
+      if (latestNews.length > 0) {
+        setWeatherNews(latestNews);
+      } else {
+        const fallbackPosts = blogPosts
+          .filter((post) => post.category === 'weather')
+          .slice(0, 3);
+        setWeatherNews(fallbackPosts);
+      }
+    };
+
+    loadWeatherNews();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // Manual refresh function
@@ -69,6 +97,10 @@ function App() {
     return markets.filter((market) => market.trending);
   }, [markets]);
 
+  const latestWeatherInsights = weatherNews.length
+    ? weatherNews
+    : blogPosts.filter((post) => post.category === 'weather').slice(0, 3);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header 
@@ -97,6 +129,57 @@ function App() {
             </div>
           </section>
         )}
+
+        <section className="mb-10">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <p className="text-sm uppercase tracking-wide text-primary-600 font-semibold">
+                Weather Intel
+              </p>
+              <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                🌦️ Latest Weather News Signals
+              </h2>
+            </div>
+            <span className="text-sm text-gray-500">
+              Fused with LINDY code {import.meta.env.VITE_LINDY_CODE || '50AGENTS'}
+            </span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {latestWeatherInsights.map((post) => (
+              <article key={post.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col gap-4">
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl" aria-hidden>
+                    {post.imageEmoji || '🌤️'}
+                  </span>
+                  <div>
+                    <p className="text-sm text-gray-500">
+                      {new Date(post.date).toLocaleDateString('en-MY', {
+                        month: 'short',
+                        day: 'numeric'
+                      })}
+                    </p>
+                    <p className="text-xs text-primary-600 font-semibold uppercase tracking-wide">
+                      {post.author}
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg text-gray-900 mb-2">{post.title}</h3>
+                  <p className="text-sm text-gray-600 overflow-hidden text-ellipsis max-h-20">
+                    {post.excerpt}
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2 mt-auto">
+                  {post.tags.slice(0, 3).map((tag) => (
+                    <span key={tag} className="text-xs bg-primary-50 text-primary-700 px-2 py-1 rounded-full">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
 
         {/* Category Filter */}
         <div className="mb-6">

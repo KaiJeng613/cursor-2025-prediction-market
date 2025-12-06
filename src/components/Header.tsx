@@ -83,9 +83,6 @@ export const Header: React.FC<HeaderProps> = ({
               <div className="text-sm text-primary-100">Active Markets</div>
               <div className="text-xl font-bold">1,247</div>
             </div>
-            <button className="bg-white text-primary-600 px-6 py-2 rounded-lg font-semibold hover:bg-primary-50 transition-colors">
-              Connect Wallet
-            </button>
           </div>
         </div>
 
