@@ -1,4 +1,4 @@
-export type MarketCategory = 'crypto' | 'stocks' | 'politics' | 'sports' | 'weather' | 'news';
+export type MarketCategory = 'crypto' | 'stocks' | 'politics' | 'sports' | 'weather' | 'news' | 'mystical';
 
 export interface Market {
   id: string;

@@ -3,7 +3,7 @@ export interface BlogPost {
   title: string;
   date: string;
   author: string;
-  category: 'weather' | 'crypto' | 'politics' | 'general';
+  category: 'weather' | 'crypto' | 'politics' | 'general' | 'mystical';
   featured: boolean;
   imageEmoji: string;
   excerpt: string;
@@ -253,6 +253,108 @@ Monitor official channels:
 *Updated daily with latest forecasts*
     `,
     tags: ['Malaysia', 'Monsoon', 'Weather Forecast', 'Flood Preparedness']
+  },
+  {
+    id: 'aliens-visit-2030',
+    title: 'When will aliens visit Earth? Signals, science, and scenarios',
+    date: '2026-01-10',
+    author: 'Mystical Watch Desk',
+    category: 'mystical',
+    featured: true,
+    imageEmoji: '🛸',
+    excerpt: 'From WOW! signals to Avi Loeb’s interstellar fragments — we explore timelines and probabilities for a first confirmed alien encounter.',
+    content: `
+# Will Aliens Visit Earth by 2030?
+
+## What We Know
+- Breakthrough Listen has scanned billions of stars with no confirmed technosignatures.
+- FRBs, the Wow! Signal, and Oumuamua-like objects keep the debate alive.
+- NASA, ESA, and private observatories are boosting sky coverage yearly.
+
+## Scenarios
+1) **Radio Technosignature Detected (low confidence)**  
+2) **Probe Flyby (medium confidence by 2035)**  
+3) **Confirmed Biological Sample (low confidence)**  
+4) **No Contact by 2050 (high confidence)**
+
+## Market Angles
+- Will a peer-reviewed paper confirm a technosignature before 2030?
+- Will a government publicly acknowledge recovered non-human tech?
+
+## Takeaway
+Probabilities remain low in the near term, but instrumentation is improving rapidly. The absence of evidence isn’t evidence of absence — yet.
+    `,
+    tags: ['Aliens', 'UFO', 'SETI', 'Technosignature', 'Space']
+  },
+  {
+    id: 'mythical-weather-beasts',
+    title: 'Mythical weather beasts: Yeti blizzards, dragon firestorms, and unicorn rainbows',
+    date: '2026-01-08',
+    author: 'Myth & Climate Desk',
+    category: 'mystical',
+    featured: false,
+    imageEmoji: '🐉',
+    excerpt: 'A whimsical tour of folklore-meets-weather: from Himalayan Yeti blizzards to dragon-induced firestorms and unicorn rainbow lore.',
+    content: `
+# Mythical Weather Beasts
+
+## Yeti Blizzards (Himalayas)
+- Folklore: Sudden whiteout storms blamed on mountain spirits.
+- Reality: Orographic lift + polar jets; probabilities tied to ENSO phases.
+
+## Dragon Firestorms (Eurasia)
+- Folklore: Dragons breathing fire to scorch valleys.
+- Reality: Foehn winds + drought = high wildfire risk.
+
+## Unicorn Rainbows (Europe)
+- Folklore: Unicorns racing after storms leave triple rainbows.
+- Reality: Low-sun-angle rainbows, rare triple-arc optics.
+
+## Market Ideas
+- Will a major “mystical weather” documentary spike search interest in 2026?
+- Will triple-rainbow viral videos exceed 50M views in a month?
+
+## Takeaway
+Myth meets meteorology: fun narratives can hint at real atmospheric edge cases worth watching in forecasts.
+    `,
+    tags: ['Mythical', 'Weather', 'Yeti', 'Dragon', 'Unicorn', 'Folklore']
+  },
+  {
+    id: 'kabuto-card-craze',
+    title: 'Kabuto card mania: can collectibles hit $1,000 by 2026?',
+    date: '2026-02-15',
+    author: 'Collectibles Watch',
+    category: 'mystical',
+    featured: false,
+    imageEmoji: '🃏',
+    excerpt: 'Collectors are buzzing about the Kabuto card—will hype and scarcity drive prices to $1,000 by 2026?',
+    content: `
+# Kabuto Card: Hype vs. Reality
+
+## Market Snapshot
+- Rising search interest around collector chatter (e.g., posts by @KabutoKing_).
+- Limited print runs and grading premiums are fueling speculation.
+- Liquidity remains thin; price spikes are volatile.
+
+## Bull Case
+- Viral attention from collectors and influencers.
+- High-grade (PSA/BGS) copies remain scarce.
+- Cross-over interest from gaming, anime, and trading-card communities.
+
+## Bear Case
+- Pullbacks when hype cools; thin order books.
+- Macro risk-off could deflate speculative collectibles.
+
+## Probability Angle
+- Sustained >$1,000 floor by 2026 needs: consistent demand, grading scarcity, and broader hobby interest.
+- Watch graded population reports, auction clears, and influencer-driven surges.
+
+## Key Signals to Track
+- Auction hammer prices and bid depth.
+- Volume spikes on major marketplaces.
+- Social/search trends tied to @KabutoKing_ and related tags.
+    `,
+    tags: ['Kabuto', 'Collectibles', 'Trading Cards', 'Speculation', 'KabutoKing']
   }
 ];
 

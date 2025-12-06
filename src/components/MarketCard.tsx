@@ -1,6 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Market } from '../types';
-import { TrendingUp, TrendingDown, Clock, DollarSign, Users, Flame } from 'lucide-react';
+import { TrendingUp, TrendingDown, Clock, DollarSign, Users, Flame, Newspaper } from 'lucide-react';
 
 interface MarketCardProps {
   market: Market;
@@ -41,6 +42,14 @@ export const MarketCard: React.FC<MarketCardProps> = ({ market, onTrade }) => {
       news: '📰',
     };
     return icons[category] || '📊';
+  };
+
+  // Generate news search query from market tags
+  const getNewsSearchQuery = () => {
+    if (market.tags && market.tags.length > 0) {
+      return market.tags[0]; // Use first tag as search term
+    }
+    return market.title.split(' ').slice(0, 3).join(' '); // Use first 3 words of title
   };
 
   return (
@@ -149,13 +158,24 @@ export const MarketCard: React.FC<MarketCardProps> = ({ market, onTrade }) => {
           </div>
         </div>
 
-        {/* Trade Button */}
-        <button
-          onClick={() => onTrade(market)}
-          className="w-full bg-primary-600 text-white py-3 rounded-lg font-semibold hover:bg-primary-700 transition-all duration-200 hover:scale-105 active:scale-100 shadow-md hover:shadow-lg"
-        >
-          Trade Now
-        </button>
+        {/* Action Buttons */}
+        <div className="space-y-2">
+          <button
+            onClick={() => onTrade(market)}
+            className="w-full bg-primary-600 text-white py-3 rounded-lg font-semibold hover:bg-primary-700 transition-all duration-200 hover:scale-105 active:scale-100 shadow-md hover:shadow-lg"
+          >
+            Trade Now
+          </button>
+          
+          <Link
+            to={`/latest-news?search=${encodeURIComponent(getNewsSearchQuery())}`}
+            className="w-full flex items-center justify-center gap-2 bg-white border-2 border-gray-200 text-gray-700 py-2.5 rounded-lg font-medium hover:border-primary-400 hover:text-primary-600 hover:bg-primary-50 transition-all duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Newspaper size={16} />
+            <span>View Related News</span>
+          </Link>
+        </div>
       </div>
 
       {/* Tags */}

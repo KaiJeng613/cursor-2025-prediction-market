@@ -1,39 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { Search, TrendingUp, Droplets, DollarSign, RefreshCw, Wallet, LogOut } from 'lucide-react';
-import { useAccount, useDisconnect, useEnsName } from 'wagmi';
-import { WalletConnectModal } from './WalletConnectModal';
+import { Search, TrendingUp, Droplets, Newspaper } from 'lucide-react';
 
 interface HeaderProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
-  onRefresh?: () => void;
-  isLoading?: boolean;
   lastUpdated?: Date | null;
-  totalMarketCap?: number;
   totalRainfall?: number;
-  ethPrice?: number;
 }
 
 export const Header: React.FC<HeaderProps> = ({ 
   searchQuery, 
   onSearchChange, 
-  onRefresh,
-  isLoading = false,
   lastUpdated,
-  totalMarketCap = 2847500000,
-  totalRainfall = 0,
-  ethPrice = 0
+  totalRainfall = 0
 }) => {
-  const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
-  const { address, isConnected } = useAccount();
-  const { disconnect } = useDisconnect();
-  const { data: ensName } = useEnsName({ address });
-
-  const formatAddress = (addr: string) => {
-    return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
-  };
-
   const formatLastUpdated = () => {
     if (!lastUpdated) return '';
     const now = new Date();
@@ -46,16 +27,6 @@ export const Header: React.FC<HeaderProps> = ({
     const diffHours = Math.floor(diffMins / 60);
     if (diffHours === 1) return '1 hour ago';
     return `${diffHours} hours ago`;
-  };
-
-  const formatMarketCap = (value: number) => {
-    if (value >= 1000000000) {
-      return `$${(value / 1000000000).toFixed(2)}B`;
-    }
-    if (value >= 1000000) {
-      return `$${(value / 1000000).toFixed(1)}M`;
-    }
-    return `$${(value / 1000).toFixed(0)}K`;
   };
 
   return (
@@ -78,20 +49,6 @@ export const Header: React.FC<HeaderProps> = ({
                 <div className="text-sm font-medium">{formatLastUpdated()}</div>
               </div>
             )}
-            {onRefresh && (
-              <button
-                onClick={onRefresh}
-                disabled={isLoading}
-                className="bg-white/10 text-white px-4 py-2 rounded-lg font-semibold hover:bg-white/20 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <RefreshCw size={16} className={isLoading ? 'animate-spin' : ''} />
-                {isLoading ? 'Updating...' : 'Refresh'}
-              </button>
-            )}
-            <div className="text-right">
-              <div className="text-sm text-primary-100">ETH Price (Etherscan)</div>
-              <div className="text-xl font-bold">${ethPrice > 0 ? ethPrice.toFixed(2) : '...'}</div>
-            </div>
             <div className="text-right">
               <div className="text-sm text-primary-100">Total Volume</div>
               <div className="text-xl font-bold">$32.4M</div>
@@ -100,31 +57,6 @@ export const Header: React.FC<HeaderProps> = ({
               <div className="text-sm text-primary-100">Active Markets</div>
               <div className="text-xl font-bold">1,247</div>
             </div>
-            {isConnected && address ? (
-              <div className="flex items-center gap-3">
-                <div className="text-right">
-                  <div className="text-sm text-primary-100">Connected</div>
-                  <div className="text-sm font-bold">
-                    {ensName || formatAddress(address)}
-                  </div>
-                </div>
-                <button
-                  onClick={() => disconnect()}
-                  className="bg-red-500/90 text-white p-3 rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2"
-                  title="Disconnect Wallet"
-                >
-                  <LogOut size={18} />
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => setIsWalletModalOpen(true)}
-                className="bg-white text-primary-600 px-6 py-2 rounded-lg font-semibold hover:bg-primary-50 transition-colors flex items-center gap-2"
-              >
-                <Wallet size={18} />
-                Connect Wallet
-              </button>
-            )}
           </div>
         </div>
 
@@ -142,42 +74,46 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Quick Stats */}
         <div className="grid grid-cols-3 gap-4 mt-6">
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+          <div className="border border-white/20 rounded-lg p-4 bg-transparent">
             <div className="flex items-center gap-2 mb-2">
               <TrendingUp size={16} />
-              <span className="text-sm text-primary-100">24h Volume</span>
+              <span className="text-sm text-primary-100">Trending News</span>
             </div>
-            <div className="text-xl font-bold">$4.2M</div>
-            <div className="text-xs text-green-300">+12.5%</div>
+            <Link
+              to="/news"
+              className="flex items-center justify-between px-3 py-3 bg-transparent text-white rounded-lg text-sm font-semibold border border-white/20 hover:border-white/40 transition-colors"
+            >
+              <span>Popular Stories</span>
+              <Newspaper size={16} />
+            </Link>
           </div>
           
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 hover:bg-white/15 transition-colors">
+          <div className="border border-white/20 rounded-lg p-4 bg-transparent">
             <div className="flex items-center gap-2 mb-2">
-              <DollarSign size={16} />
-              <span className="text-sm text-primary-100">Total Market Cap</span>
+              <Newspaper size={16} />
+              <span className="text-sm text-primary-100">Latest News</span>
             </div>
-            <div className="text-xl font-bold">{formatMarketCap(totalMarketCap)}</div>
-            <div className="text-xs text-gray-300">Crypto & Stocks</div>
+            <Link
+              to="/latest-news"
+              className="inline-flex items-center justify-center w-full px-3 py-3 bg-transparent text-white rounded-lg text-sm font-semibold border border-white/20 hover:border-white/40 transition-colors"
+            >
+              View feeds
+            </Link>
           </div>
           
           <Link 
             to="/rain-analysis" 
-            className="bg-white/10 backdrop-blur-sm rounded-lg p-4 hover:bg-white/20 transition-colors cursor-pointer group"
+            className="border border-white/20 rounded-lg p-4 bg-transparent hover:border-white/40 transition-colors cursor-pointer group"
           >
             <div className="flex items-center gap-2 mb-2">
               <Droplets size={16} className="group-hover:animate-bounce" />
-              <span className="text-sm text-primary-100">Total Rainfall MY</span>
+              <span className="text-sm text-primary-100">Weather</span>
             </div>
             <div className="text-xl font-bold">{totalRainfall.toFixed(1)}mm</div>
             <div className="text-xs text-cyan-300 group-hover:underline">Click for analysis →</div>
           </Link>
         </div>
       </div>
-      
-      <WalletConnectModal
-        isOpen={isWalletModalOpen}
-        onClose={() => setIsWalletModalOpen(false)}
-      />
     </header>
   );
 };

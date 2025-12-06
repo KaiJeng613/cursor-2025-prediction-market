@@ -14,6 +14,7 @@ const categories: { value: MarketCategory | 'all'; label: string; icon: string }
   { value: 'sports', label: 'Sports', icon: '⚽' },
   { value: 'weather', label: 'Weather', icon: '🌤️' },
   { value: 'news', label: 'News & Tech', icon: '📰' },
+  { value: 'mystical', label: 'Mystical', icon: '🛸' },
 ];
 
 export const CategoryFilter: React.FC<CategoryFilterProps> = ({

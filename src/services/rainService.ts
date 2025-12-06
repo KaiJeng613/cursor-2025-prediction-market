@@ -1,19 +1,5 @@
-// Note: ApifyClient requires Node.js environment
-// In browser, we'll use mock data
-let client: any = null;
-
-// Initialize client asynchronously
-const initClient = async () => {
-  try {
-    const { ApifyClient } = await import('apify-client');
-    const APIFY_API_KEY = import.meta.env.VITE_APIFY_API_KEY || '';
-    if (APIFY_API_KEY && typeof window === 'undefined') {
-      client = new ApifyClient({ token: APIFY_API_KEY });
-    }
-  } catch (error) {
-    console.log('Apify client not available in browser, using mock data');
-  }
-};
+// Note: ApifyClient causes browser errors due to Node.js dependencies
+// Using mock data for browser compatibility
 
 export interface MalaysianStateRainData {
   state: string;
@@ -68,53 +54,10 @@ export const malaysianStates = [
  */
 export async function fetchMalaysianRainData(): Promise<MalaysianStateRainData[]> {
   try {
-    console.log('🌧️ Fetching Malaysian rainfall data...');
-    
-    // Try to initialize client if not already done
-    if (!client) {
-      await initClient();
-    }
-    
-    // Check if Apify client is available (Node.js environment)
-    if (!client) {
-      console.log('Using mock data (Apify client not available in browser)');
-      return generateMockRainData();
-    }
-    
-    // Run the weather-fetcher actor
-    const run = await client.actor('dtrungtin/weather-fetcher').call({
-      locations: malaysianStates.map(state => `${state}, Malaysia`),
-      units: 'metric'
-    });
-
-    // Fetch results from the dataset
-    const { items } = await client.dataset(run.defaultDatasetId).listItems();
-    
-    const rainData: MalaysianStateRainData[] = items.map((item: any) => {
-      // Generate mock historical data based on current conditions
-      const currentRain = item.precipitation || 0;
-      const baseRain = currentRain || Math.random() * 50;
-      
-      return {
-        state: item.location?.split(',')[0] || 'Unknown',
-        currentRainfall: currentRain,
-        last24hRainfall: baseRain * (0.8 + Math.random() * 0.4),
-        last7daysRainfall: baseRain * 7 * (0.7 + Math.random() * 0.6),
-        last30daysRainfall: baseRain * 30 * (0.6 + Math.random() * 0.8),
-        averageMonthlyRainfall: baseRain * 30,
-        temperature: item.temperature || 28,
-        humidity: item.humidity || 75,
-        condition: item.condition || 'Partly Cloudy',
-        forecast: generateForecast(baseRain, item.temperature || 28),
-        lastUpdated: new Date().toISOString(),
-      };
-    });
-
-    console.log(`✅ Fetched rain data for ${rainData.length} Malaysian states`);
-    return rainData;
+    console.log('🌧️ Using mock Malaysian rainfall data (Apify disabled for browser compatibility)');
+    return generateMockRainData();
   } catch (error) {
-    console.error('❌ Error fetching rain data from Apify:', error);
-    // Return mock data as fallback
+    console.error('❌ Error generating rain data:', error);
     return generateMockRainData();
   }
 }

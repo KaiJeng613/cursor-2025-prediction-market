@@ -7,27 +7,23 @@ import { sampleMarkets } from '../data/markets';
 import { Market, MarketCategory } from '../types';
 import { updateCryptoMarketPredictions } from '../services/cryptoService';
 import { fetchMalaysianRainData, calculateTotalMalaysianRainfall } from '../services/rainService';
-import { fetchEthData, calculateTotalCryptoMarketCap } from '../services/etherscanService';
+import { fetchEthData } from '../services/etherscanService';
+import { fetchTrendingPredictionTopics } from '../services/trendingService';
 
 export const Markets = () => {
   const [selectedCategory, setSelectedCategory] = useState<MarketCategory | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedMarket, setSelectedMarket] = useState<Market | null>(null);
   const [markets, setMarkets] = useState<Market[]>(sampleMarkets);
-  const [isLoading, setIsLoading] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [totalRainfall, setTotalRainfall] = useState(0);
-  const [totalMarketCap, setTotalMarketCap] = useState(0);
-  const [ethPrice, setEthPrice] = useState<number>(0);
 
   // Fetch and update crypto prices from Etherscan every minute
   useEffect(() => {
     const updatePrices = async () => {
-      setIsLoading(true);
       try {
         // Fetch ETH data from Etherscan
         const ethData = await fetchEthData();
-        setEthPrice(ethData.price);
         
         // Update crypto markets with CoinGecko data
         const updatedMarkets = await updateCryptoMarketPredictions(markets);
@@ -47,16 +43,9 @@ export const Markets = () => {
         
         setMarkets(finalMarkets);
         setLastUpdated(new Date());
-        
-        // Calculate total market cap from Etherscan
-        const marketCap = await calculateTotalCryptoMarketCap();
-        setTotalMarketCap(marketCap);
-        
-        console.log(`✅ Updated prices - ETH: $${ethData.price.toFixed(2)} | Market Cap: $${(marketCap / 1e9).toFixed(2)}B`);
+        console.log(`✅ Updated prices - ETH: $${ethData.price.toFixed(2)}`);
       } catch (error) {
         console.error('Failed to update crypto prices:', error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
@@ -71,65 +60,60 @@ export const Markets = () => {
       }
     };
 
+    // Fetch trending topics and mark top 20 markets as trending
+    const updateTrending = async () => {
+      try {
+        const topics = await fetchTrendingPredictionTopics();
+        console.log(`📈 Trending topics updated: ${topics.length} topics`);
+        
+        // Mark markets as trending if their tags match trending topics
+        const updatedMarkets = markets.map(market => {
+          const matchesTrending = topics.some(topic => 
+            market.tags.some(tag => 
+              tag.toLowerCase().includes(topic.topic.toLowerCase()) ||
+              topic.topic.toLowerCase().includes(tag.toLowerCase())
+            )
+          );
+          return { ...market, trending: matchesTrending };
+        });
+        
+        setMarkets(updatedMarkets);
+      } catch (error) {
+        console.error('Failed to update trending:', error);
+      }
+    };
+
     // Update immediately on mount
     updatePrices();
     updateRainfall();
+    updateTrending();
 
     // Update crypto prices every 1 minute (using Etherscan)
     const priceInterval = setInterval(updatePrices, 60 * 1000);
     
     // Update rainfall every 5 minutes
     const rainInterval = setInterval(updateRainfall, 5 * 60 * 1000);
+    
+    // Update trending topics every 3 minutes
+    const trendingInterval = setInterval(updateTrending, 3 * 60 * 1000);
 
     return () => {
       clearInterval(priceInterval);
       clearInterval(rainInterval);
+      clearInterval(trendingInterval);
     };
   }, []);
 
-  // Manual refresh function
-  const handleRefresh = async () => {
-    setIsLoading(true);
-    try {
-      // Fetch ETH data from Etherscan
-      const ethData = await fetchEthData();
-      setEthPrice(ethData.price);
-      
-      const updatedMarkets = await updateCryptoMarketPredictions(markets);
-      
-      // Update ETH-related markets
-      const finalMarkets = updatedMarkets.map(market => {
-        if (market.title.toLowerCase().includes('ethereum') || market.title.toLowerCase().includes('eth')) {
-          return {
-            ...market,
-            currentPrice: ethData.price,
-            priceChange24h: ethData.change24h,
-            lastUpdated: new Date().toISOString()
-          };
-        }
-        return market;
-      });
-      
-      setMarkets(finalMarkets);
-      setLastUpdated(new Date());
-      
-      const rainData = await fetchMalaysianRainData();
-      const total = calculateTotalMalaysianRainfall(rainData);
-      setTotalRainfall(total);
-      
-      const marketCap = await calculateTotalCryptoMarketCap();
-      setTotalMarketCap(marketCap);
-      
-      console.log(`🔄 Manual refresh - ETH: $${ethData.price.toFixed(2)}`);
-    } catch (error) {
-      console.error('Failed to update data:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const filteredMarkets = useMemo(() => {
-    return markets.filter((market) => {
+    const sorted = [...markets].sort((a, b) => {
+      const daysA =
+        (new Date(a.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24);
+      const daysB =
+        (new Date(b.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24);
+      return daysA - daysB;
+    });
+
+    return sorted.filter((market) => {
       const matchesCategory =
         selectedCategory === 'all' || market.category === selectedCategory;
       const matchesSearch =
@@ -149,12 +133,8 @@ export const Markets = () => {
       <Header 
         searchQuery={searchQuery} 
         onSearchChange={setSearchQuery}
-        onRefresh={handleRefresh}
-        isLoading={isLoading}
         lastUpdated={lastUpdated}
-        totalMarketCap={totalMarketCap}
         totalRainfall={totalRainfall}
-        ethPrice={ethPrice}
       />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

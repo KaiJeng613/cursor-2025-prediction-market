@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const ETHERSCAN_API_KEY = import.meta.env.VITE_ETHERSCAN_API_KEY || 'X4BPCXS9KYCRECS5S34PEAUA6YXYGJ9727';
 const ETHERSCAN_API_BASE = 'https://api.etherscan.io/api';
+const COINGECKO_API_BASE = 'https://api.coingecko.com/api/v3';
 
 export interface TokenPrice {
   symbol: string;
@@ -20,26 +21,28 @@ export interface EthPrice {
 }
 
 /**
- * Fetch current ETH price from Etherscan
+ * Fetch current ETH price from CoinGecko
  */
 export async function fetchEthPrice(): Promise<number> {
   try {
-    console.log('💎 Fetching ETH price from Etherscan...');
-    
-    const response = await axios.get(ETHERSCAN_API_BASE, {
+    console.log('💎 Fetching ETH price from CoinGecko...');
+
+    const response = await axios.get(`${COINGECKO_API_BASE}/simple/price`, {
       params: {
-        module: 'stats',
-        action: 'ethprice',
-        apikey: ETHERSCAN_API_KEY
-      }
+        ids: 'ethereum',
+        vs_currencies: 'usd',
+        include_market_cap: true,
+        include_24hr_change: true,
+      },
     });
 
-    if (response.data.status === '1' && response.data.result) {
-      const price = parseFloat(response.data.result.ethusd);
-      console.log(`✅ ETH price: $${price.toFixed(2)}`);
+    const data = response.data?.ethereum;
+    if (data && typeof data.usd === 'number') {
+      const price = data.usd;
+      console.log(`✅ ETH price (CG): $${price.toFixed(2)}`);
       return price;
     }
-    
+
     throw new Error('Failed to fetch ETH price');
   } catch (error) {
     console.error('❌ Error fetching ETH price:', error);
@@ -75,18 +78,30 @@ export async function fetchEthSupply(): Promise<number> {
 }
 
 /**
- * Calculate ETH market cap
+ * Calculate ETH market cap (CoinGecko)
  */
 export async function fetchEthMarketCap(): Promise<number> {
   try {
-    const [price, supply] = await Promise.all([
-      fetchEthPrice(),
-      fetchEthSupply()
-    ]);
-    
-    const marketCap = price * supply;
-    console.log(`💰 ETH Market Cap: $${(marketCap / 1e9).toFixed(2)}B`);
-    return marketCap;
+    const response = await axios.get(`${COINGECKO_API_BASE}/coins/ethereum`, {
+      params: {
+        localization: false,
+        tickers: false,
+        market_data: true,
+        community_data: false,
+        developer_data: false,
+        sparkline: false,
+      },
+    });
+
+    const marketCap = response.data?.market_data?.market_cap?.usd;
+    if (marketCap && typeof marketCap === 'number') {
+      console.log(`💰 ETH Market Cap (CG): $${(marketCap / 1e9).toFixed(2)}B`);
+      return marketCap;
+    }
+
+    // Fallback using price * supply
+    const [price, supply] = await Promise.all([fetchEthPrice(), fetchEthSupply()]);
+    return price * supply;
   } catch (error) {
     console.error('❌ Error calculating ETH market cap:', error);
     return 300000000000; // Fallback: ~300B
@@ -221,24 +236,35 @@ export interface EnhancedCryptoPrice {
  */
 export async function fetchEthData(): Promise<EnhancedCryptoPrice> {
   try {
-    console.log('🔄 Fetching comprehensive ETH data from Etherscan...');
-    
-    const [price, marketCap, gasData, networkData] = await Promise.all([
-      fetchEthPrice(),
-      fetchEthMarketCap(),
+    console.log('🔄 Fetching comprehensive ETH data (CoinGecko + Etherscan gas)...');
+
+    const [cgResp, gasData, networkData] = await Promise.all([
+      axios.get(`${COINGECKO_API_BASE}/coins/ethereum`, {
+        params: {
+          localization: false,
+          tickers: false,
+          market_data: true,
+          community_data: false,
+          developer_data: false,
+          sparkline: false,
+        },
+      }),
       fetchGasPrice(),
-      fetchNetworkActivity()
+      fetchNetworkActivity(),
     ]);
 
-    // Simulate 24h change (in production, you'd track historical data)
-    const change24h = (Math.random() - 0.5) * 10;
+    const marketData = cgResp.data?.market_data;
+    const price = marketData?.current_price?.usd ?? 2500;
+    const marketCap = marketData?.market_cap?.usd ?? 300000000000;
+    const volume24h = marketData?.total_volume?.usd ?? marketCap * 0.15;
+    const change24h = marketData?.price_change_percentage_24h ?? 0;
 
     const ethData: EnhancedCryptoPrice = {
       symbol: 'ETH',
       price,
       change24h,
       marketCap,
-      volume24h: marketCap * 0.15, // Estimate daily volume
+      volume24h,
       gasPrice: {
         safeLow: gasData.safeLow,
         standard: gasData.standard,
@@ -251,7 +277,7 @@ export async function fetchEthData(): Promise<EnhancedCryptoPrice> {
       }
     };
 
-    console.log(`✅ ETH Data: $${price.toFixed(2)} | Gas: ${gasData.standard} Gwei | Activity: ${networkData.networkUtilization.toFixed(1)}%`);
+    console.log(`✅ ETH Data (CG): $${price.toFixed(2)} | 24h: ${change24h.toFixed(2)}% | Gas: ${gasData.standard} Gwei`);
     
     return ethData;
   } catch (error) {
@@ -267,20 +293,14 @@ export async function fetchEthData(): Promise<EnhancedCryptoPrice> {
 }
 
 /**
- * Calculate total crypto market cap including ETH
+ * Calculate total crypto market cap including ETH (CoinGecko global)
  */
 export async function calculateTotalCryptoMarketCap(): Promise<number> {
   try {
-    const ethMarketCap = await fetchEthMarketCap();
-    
-    // Estimate other major cryptocurrencies
-    // In production, you'd fetch these from other APIs or aggregate
-    const estimatedBTCMarketCap = 900000000000; // ~900B
-    const estimatedOthers = 500000000000; // ~500B
-    
-    const total = ethMarketCap + estimatedBTCMarketCap + estimatedOthers;
-    
-    return total;
+    const response = await axios.get(`${COINGECKO_API_BASE}/global`);
+    const total = response.data?.data?.total_market_cap?.usd;
+    if (total && typeof total === 'number') return total;
+    throw new Error('Global market cap missing');
   } catch (error) {
     console.error('❌ Error calculating total market cap:', error);
     return 1700000000000; // Fallback: ~1.7T
