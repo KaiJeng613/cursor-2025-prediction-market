@@ -7,6 +7,7 @@ import { sampleMarkets } from '../data/markets';
 import { Market, MarketCategory } from '../types';
 import { updateCryptoMarketPredictions } from '../services/cryptoService';
 import { fetchMalaysianRainData, calculateTotalMalaysianRainfall } from '../services/rainService';
+import { fetchEthData, calculateTotalCryptoMarketCap } from '../services/etherscanService';
 
 export const Markets = () => {
   const [selectedCategory, setSelectedCategory] = useState<MarketCategory | 'all'>('all');
@@ -17,26 +18,41 @@ export const Markets = () => {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [totalRainfall, setTotalRainfall] = useState(0);
   const [totalMarketCap, setTotalMarketCap] = useState(0);
+  const [ethPrice, setEthPrice] = useState<number>(0);
 
-  // Fetch and update crypto prices on mount and periodically
+  // Fetch and update crypto prices from Etherscan every minute
   useEffect(() => {
     const updatePrices = async () => {
       setIsLoading(true);
       try {
+        // Fetch ETH data from Etherscan
+        const ethData = await fetchEthData();
+        setEthPrice(ethData.price);
+        
+        // Update crypto markets with CoinGecko data
         const updatedMarkets = await updateCryptoMarketPredictions(markets);
-        setMarkets(updatedMarkets);
+        
+        // Update ETH-related markets with Etherscan data
+        const finalMarkets = updatedMarkets.map(market => {
+          if (market.title.toLowerCase().includes('ethereum') || market.title.toLowerCase().includes('eth')) {
+            return {
+              ...market,
+              currentPrice: ethData.price,
+              priceChange24h: ethData.change24h,
+              lastUpdated: new Date().toISOString()
+            };
+          }
+          return market;
+        });
+        
+        setMarkets(finalMarkets);
         setLastUpdated(new Date());
         
-        // Calculate total market cap from crypto and stock markets
-        const marketCap = updatedMarkets
-          .filter(m => m.category === 'crypto' || m.category === 'stocks')
-          .reduce((total, m) => {
-            if (m.currentPrice && m.volume) {
-              return total + (m.currentPrice * m.volume / 100);
-            }
-            return total;
-          }, 0);
+        // Calculate total market cap from Etherscan
+        const marketCap = await calculateTotalCryptoMarketCap();
         setTotalMarketCap(marketCap);
+        
+        console.log(`✅ Updated prices - ETH: $${ethData.price.toFixed(2)} | Market Cap: $${(marketCap / 1e9).toFixed(2)}B`);
       } catch (error) {
         console.error('Failed to update crypto prices:', error);
       } finally {
@@ -59,26 +75,52 @@ export const Markets = () => {
     updatePrices();
     updateRainfall();
 
-    // Update every 5 minutes
-    const interval = setInterval(() => {
-      updatePrices();
-      updateRainfall();
-    }, 5 * 60 * 1000);
+    // Update crypto prices every 1 minute (using Etherscan)
+    const priceInterval = setInterval(updatePrices, 60 * 1000);
+    
+    // Update rainfall every 5 minutes
+    const rainInterval = setInterval(updateRainfall, 5 * 60 * 1000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(priceInterval);
+      clearInterval(rainInterval);
+    };
   }, []);
 
   // Manual refresh function
   const handleRefresh = async () => {
     setIsLoading(true);
     try {
+      // Fetch ETH data from Etherscan
+      const ethData = await fetchEthData();
+      setEthPrice(ethData.price);
+      
       const updatedMarkets = await updateCryptoMarketPredictions(markets);
-      setMarkets(updatedMarkets);
+      
+      // Update ETH-related markets
+      const finalMarkets = updatedMarkets.map(market => {
+        if (market.title.toLowerCase().includes('ethereum') || market.title.toLowerCase().includes('eth')) {
+          return {
+            ...market,
+            currentPrice: ethData.price,
+            priceChange24h: ethData.change24h,
+            lastUpdated: new Date().toISOString()
+          };
+        }
+        return market;
+      });
+      
+      setMarkets(finalMarkets);
       setLastUpdated(new Date());
       
       const rainData = await fetchMalaysianRainData();
       const total = calculateTotalMalaysianRainfall(rainData);
       setTotalRainfall(total);
+      
+      const marketCap = await calculateTotalCryptoMarketCap();
+      setTotalMarketCap(marketCap);
+      
+      console.log(`🔄 Manual refresh - ETH: $${ethData.price.toFixed(2)}`);
     } catch (error) {
       console.error('Failed to update data:', error);
     } finally {
@@ -112,6 +154,7 @@ export const Markets = () => {
         lastUpdated={lastUpdated}
         totalMarketCap={totalMarketCap}
         totalRainfall={totalRainfall}
+        ethPrice={ethPrice}
       />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

@@ -1,11 +1,16 @@
-import { ApifyClient } from 'apify-client';
+// Note: ApifyClient requires Node.js environment
+// In browser, we'll use mock data
+let client: any = null;
 
-const APIFY_API_KEY = import.meta.env.VITE_APIFY_API_KEY || '';
-
-// Initialize the ApifyClient
-const client = new ApifyClient({
-  token: APIFY_API_KEY,
-});
+try {
+  const { ApifyClient } = await import('apify-client');
+  const APIFY_API_KEY = import.meta.env.VITE_APIFY_API_KEY || '';
+  if (APIFY_API_KEY && typeof window === 'undefined') {
+    client = new ApifyClient({ token: APIFY_API_KEY });
+  }
+} catch (error) {
+  console.log('Apify client not available in browser, using mock data');
+}
 
 export interface MalaysianStateRainData {
   state: string;
@@ -60,7 +65,13 @@ export const malaysianStates = [
  */
 export async function fetchMalaysianRainData(): Promise<MalaysianStateRainData[]> {
   try {
-    console.log('🌧️ Fetching Malaysian rainfall data via Apify...');
+    console.log('🌧️ Fetching Malaysian rainfall data...');
+    
+    // Check if Apify client is available (Node.js environment)
+    if (!client) {
+      console.log('Using mock data (Apify client not available in browser)');
+      return generateMockRainData();
+    }
     
     // Run the weather-fetcher actor
     const run = await client.actor('dtrungtin/weather-fetcher').call({

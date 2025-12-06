@@ -10,6 +10,7 @@ interface HeaderProps {
   lastUpdated?: Date | null;
   totalMarketCap?: number;
   totalRainfall?: number;
+  ethPrice?: number;
 }
 
 export const Header: React.FC<HeaderProps> = ({ 
@@ -19,7 +20,8 @@ export const Header: React.FC<HeaderProps> = ({
   isLoading = false,
   lastUpdated,
   totalMarketCap = 2847500000,
-  totalRainfall = 0
+  totalRainfall = 0,
+  ethPrice = 0
 }) => {
   const formatLastUpdated = () => {
     if (!lastUpdated) return '';
@@ -75,6 +77,10 @@ export const Header: React.FC<HeaderProps> = ({
                 {isLoading ? 'Updating...' : 'Refresh'}
               </button>
             )}
+            <div className="text-right">
+              <div className="text-sm text-primary-100">ETH Price (Etherscan)</div>
+              <div className="text-xl font-bold">${ethPrice > 0 ? ethPrice.toFixed(2) : '...'}</div>
+            </div>
             <div className="text-right">
               <div className="text-sm text-primary-100">Total Volume</div>
               <div className="text-xl font-bold">$32.4M</div>

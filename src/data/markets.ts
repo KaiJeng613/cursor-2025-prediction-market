@@ -1,6 +1,40 @@
 import { Market } from '../types';
 
 export const sampleMarkets: Market[] = [
+  // Ethereum Markets (powered by Etherscan)
+  {
+    id: 'eth-5k-2025',
+    title: 'Will Ethereum reach $5,000 by end of 2025?',
+    description: 'Ethereum continues to dominate smart contracts with live data from Etherscan. Will ETH break the $5k barrier by December 31, 2025?',
+    category: 'crypto',
+    yesPrice: 0.58,
+    noPrice: 0.42,
+    volume: 3200000,
+    liquidity: 1100000,
+    endDate: '2025-12-31',
+    trending: true,
+    tags: ['Ethereum', 'ETH', 'Etherscan', 'Smart Contracts'],
+    currentPrice: 2500,
+    targetPrice: 5000,
+    priceChange24h: 1.8
+  },
+  {
+    id: 'eth-10k-2026',
+    title: 'Will Ethereum hit $10,000 in 2026?',
+    description: 'With Layer 2 scaling and institutional adoption, can ETH reach $10,000 by December 2026? Real-time data via Etherscan API.',
+    category: 'crypto',
+    yesPrice: 0.35,
+    noPrice: 0.65,
+    volume: 2100000,
+    liquidity: 850000,
+    endDate: '2026-12-31',
+    trending: true,
+    tags: ['Ethereum', 'ETH', 'Layer 2', 'DeFi'],
+    currentPrice: 2500,
+    targetPrice: 10000,
+    priceChange24h: 1.8
+  },
+  
   // Crypto Markets
   {
     id: 'btc-100k-2025',

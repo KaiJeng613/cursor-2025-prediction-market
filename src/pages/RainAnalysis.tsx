@@ -5,7 +5,7 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer 
 } from 'recharts';
 import { 
-  ArrowLeft, Droplets, TrendingUp, CloudRain, AlertTriangle, 
+  ArrowLeft, Droplets, CloudRain, AlertTriangle, 
   Calendar, MapPin, RefreshCw 
 } from 'lucide-react';
 import {
@@ -68,10 +68,6 @@ export const RainAnalysis = () => {
   }));
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D'];
-
-  const selectedStateData = selectedState 
-    ? rainData.find(s => s.state === selectedState) 
-    : null;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -226,7 +222,7 @@ export const RainAnalysis = () => {
                   fill="#8884d8"
                   dataKey="rainfall"
                 >
-                  {chartData.slice(0, 6).map((entry, index) => (
+                  {chartData.slice(0, 6).map((_entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
@@ -240,7 +236,7 @@ export const RainAnalysis = () => {
         <div>
           <h2 className="text-2xl font-bold text-gray-900 mb-6">State-by-State Analysis</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {rainData.map((state, index) => {
+            {rainData.map((state) => {
               const prediction = predictions.find(p => p.state === state.state);
               return (
                 <div
