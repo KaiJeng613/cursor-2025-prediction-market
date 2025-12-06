@@ -9,11 +9,6 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ],
-  "env": {
-    "VITE_APIFY_API_KEY": "@apify_api_key",
-    "VITE_ETHERSCAN_API_KEY": "@etherscan_api_key",
-    "VITE_LINDY_API_KEY": "@lindy_api_key"
-  }
+  ]
 }
 
