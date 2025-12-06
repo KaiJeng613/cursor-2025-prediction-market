@@ -6,11 +6,16 @@ import { injected, coinbaseWallet } from 'wagmi/connectors';
 export const config = createConfig({
   chains: [mainnet, sepolia],
   connectors: [
-    // MetaMask and other injected wallets
+    // MetaMask (prioritized and first in list)
     injected({
       target: 'metaMask',
     }),
-    // Rabby wallet (also uses injected provider)
+    // Coinbase Wallet
+    coinbaseWallet({
+      appName: 'PredictHub',
+      appLogoUrl: '/favicon.svg',
+    }),
+    // Rabby wallet
     injected({
       target() {
         return {
@@ -19,11 +24,6 @@ export const config = createConfig({
           provider: (window as any).rabby,
         };
       },
-    }),
-    // Coinbase Wallet
-    coinbaseWallet({
-      appName: 'PredictHub',
-      appLogoUrl: '/favicon.svg',
     }),
   ],
   transports: {
