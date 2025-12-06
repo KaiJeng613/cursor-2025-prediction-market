@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Weather API configuration (using OpenWeatherMap as an example)
 // You can replace this with weather-fetcher or another service
-const WEATHER_API_KEY = process.env.VITE_WEATHER_API_KEY || 'demo_key';
+const WEATHER_API_KEY = import.meta.env.VITE_WEATHER_API_KEY || 'demo_key';
 const WEATHER_API_BASE = 'https://api.openweathermap.org/data/2.5';
 
 export interface WeatherData {
@@ -114,8 +114,7 @@ export const malaysianCities = [
 export function calculateWeatherProbability(
   currentTemp: number,
   targetTemp: number,
-  daysUntilEnd: number,
-  historicalData?: number[]
+  daysUntilEnd: number
 ): { yesPrice: number; noPrice: number } {
   const tempDiff = Math.abs(targetTemp - currentTemp);
   const seasonalFactor = Math.max(0.5, Math.min(1.5, daysUntilEnd / 30));

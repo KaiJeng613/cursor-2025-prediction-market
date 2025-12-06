@@ -1,5 +1,6 @@
 import React from 'react';
-import { Search, TrendingUp, BarChart3, Activity, RefreshCw } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Search, TrendingUp, Droplets, DollarSign, RefreshCw } from 'lucide-react';
 
 interface HeaderProps {
   searchQuery: string;
@@ -7,6 +8,8 @@ interface HeaderProps {
   onRefresh?: () => void;
   isLoading?: boolean;
   lastUpdated?: Date | null;
+  totalMarketCap?: number;
+  totalRainfall?: number;
 }
 
 export const Header: React.FC<HeaderProps> = ({ 
@@ -14,7 +17,9 @@ export const Header: React.FC<HeaderProps> = ({
   onSearchChange, 
   onRefresh,
   isLoading = false,
-  lastUpdated 
+  lastUpdated,
+  totalMarketCap = 2847500000,
+  totalRainfall = 0
 }) => {
   const formatLastUpdated = () => {
     if (!lastUpdated) return '';
@@ -29,19 +34,30 @@ export const Header: React.FC<HeaderProps> = ({
     if (diffHours === 1) return '1 hour ago';
     return `${diffHours} hours ago`;
   };
+
+  const formatMarketCap = (value: number) => {
+    if (value >= 1000000000) {
+      return `$${(value / 1000000000).toFixed(2)}B`;
+    }
+    if (value >= 1000000) {
+      return `$${(value / 1000000).toFixed(1)}M`;
+    }
+    return `$${(value / 1000).toFixed(0)}K`;
+  };
+
   return (
     <header className="bg-gradient-to-r from-primary-600 to-primary-800 text-white shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
+          <Link to="/" className="flex items-center gap-3 hover:opacity-90 transition-opacity">
             <div className="bg-white/10 p-3 rounded-xl backdrop-blur-sm">
-              <Activity size={32} />
+              <TrendingUp size={32} />
             </div>
             <div>
               <h1 className="text-3xl font-bold">PredictHub</h1>
               <p className="text-primary-100 text-sm">Trade on Future Events</p>
             </div>
-          </div>
+          </Link>
           <div className="hidden md:flex items-center gap-6">
             {lastUpdated && (
               <div className="text-right">
@@ -95,22 +111,27 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="text-xl font-bold">$4.2M</div>
             <div className="text-xs text-green-300">+12.5%</div>
           </div>
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+          
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 hover:bg-white/15 transition-colors">
             <div className="flex items-center gap-2 mb-2">
-              <BarChart3 size={16} />
-              <span className="text-sm text-primary-100">Total Liquidity</span>
+              <DollarSign size={16} />
+              <span className="text-sm text-primary-100">Total Market Cap</span>
             </div>
-            <div className="text-xl font-bold">$18.7M</div>
-            <div className="text-xs text-green-300">+8.3%</div>
+            <div className="text-xl font-bold">{formatMarketCap(totalMarketCap)}</div>
+            <div className="text-xs text-gray-300">Crypto & Stocks</div>
           </div>
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+          
+          <Link 
+            to="/rain-analysis" 
+            className="bg-white/10 backdrop-blur-sm rounded-lg p-4 hover:bg-white/20 transition-colors cursor-pointer group"
+          >
             <div className="flex items-center gap-2 mb-2">
-              <Activity size={16} />
-              <span className="text-sm text-primary-100">Active Traders</span>
+              <Droplets size={16} className="group-hover:animate-bounce" />
+              <span className="text-sm text-primary-100">Total Rainfall MY</span>
             </div>
-            <div className="text-xl font-bold">12,453</div>
-            <div className="text-xs text-green-300">+5.7%</div>
-          </div>
+            <div className="text-xl font-bold">{totalRainfall.toFixed(1)}mm</div>
+            <div className="text-xs text-cyan-300 group-hover:underline">Click for analysis →</div>
+          </Link>
         </div>
       </div>
     </header>

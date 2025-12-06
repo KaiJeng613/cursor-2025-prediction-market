@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Header } from './components/Header';
 import { CategoryFilter } from './components/CategoryFilter';
 import { MarketCard } from './components/MarketCard';
