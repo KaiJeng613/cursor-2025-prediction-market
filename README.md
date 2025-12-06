@@ -2,6 +2,10 @@
 
 A modern, real-time prediction market platform for trading on future events including cryptocurrency prices, stock movements, political outcomes, sports events, and weather predictions with **comprehensive Malaysian rainfall analysis**.
 
+## 🌐 Live Demo
+
+Live on Vercel: [https://cursor-2025-prediction-market.vercel.app](https://cursor-2025-prediction-market.vercel.app)
+
 ## 🚀 Features
 
 - **🔗 Etherscan API Integration**: Real-time Ethereum price updates every minute
@@ -45,36 +49,6 @@ The platform features comprehensive Etherscan API integration for real-time Ethe
 - **Rainfall Data**: Every 5 minutes
 
 The header displays live ETH price with "(Etherscan)" badge to indicate the data source.
-
-## 💼 Wallet Connection
-
-PredictHub supports multiple wallet providers for seamless Web3 integration:
-
-### Supported Wallets:
-- **🦊 MetaMask**: Most popular Ethereum wallet
-- **🔵 Coinbase Wallet**: Trusted wallet from Coinbase
-- **🐰 Rabby**: Advanced wallet with better UX
-
-### Features:
-- One-click wallet connection
-- Display connected address in header
-- ENS name resolution support
-- Easy disconnect functionality
-- Network switching support (Mainnet/Sepolia)
-
-### How to Connect:
-1. Click the "Connect Wallet" button in the header
-2. Choose your preferred wallet (MetaMask, Coinbase, or Rabby)
-3. Approve the connection in your wallet
-4. Your address will be displayed in the header
-
-### First Time Setup:
-If you don't have a wallet yet:
-- **MetaMask**: https://metamask.io/download/
-- **Coinbase Wallet**: https://www.coinbase.com/wallet
-- **Rabby**: https://rabby.io/
-
-The wallet integration uses Wagmi v3 + Viem for secure and reliable Web3 connections.
 
 ## 🌧️ Rain Analysis Features
 
