@@ -4,7 +4,8 @@ A modern, real-time prediction market platform for trading on future events incl
 
 ## 🚀 Features
 
-- **Real-time Crypto Price Integration**: Live cryptocurrency prices from CoinGecko API
+- **🔗 Etherscan API Integration**: Real-time Ethereum price updates every minute
+- **Real-time Crypto Price Integration**: Live cryptocurrency prices from CoinGecko API + Etherscan
 - **📊 Malaysian Rainfall Analysis**: Comprehensive rain tracking and predictions across all Malaysian states
 - **Interactive Charts**: Beautiful visualizations using Recharts
 - **Multiple Market Categories**: 
@@ -19,6 +20,30 @@ A modern, real-time prediction market platform for trading on future events incl
 - **Interactive Trading**: Intuitive trade modal with profit/loss calculations
 - **Trending Markets**: Highlighted popular markets
 - **Search & Filter**: Easy navigation through market categories
+
+## 🔗 Etherscan Integration
+
+The platform features comprehensive Etherscan API integration for real-time Ethereum data:
+
+### Features:
+- **Live ETH Price**: Updates every 60 seconds
+- **Market Cap Calculation**: Real-time ETH supply × current price
+- **Gas Price Tracking**: SafeLow, Standard, Fast, and Fastest gas prices
+- **Network Activity**: Transaction count and active addresses
+- **Network Utilization**: Real-time network usage metrics
+
+### API Endpoints Used:
+- `ethprice` - Current ETH/USD price
+- `ethsupply` - Total ETH supply
+- `gasoracle` - Current gas prices
+- `tokenbalance` - ERC-20 token balances (for whale tracking)
+
+### Update Frequency:
+- **ETH Price**: Every 1 minute (60 seconds)
+- **Market Data**: Every 5 minutes
+- **Rainfall Data**: Every 5 minutes
+
+The header displays live ETH price with "(Etherscan)" badge to indicate the data source.
 
 ## 🌧️ Rain Analysis Features
 
@@ -52,6 +77,7 @@ Access the rainfall analysis by clicking the **"Total Rainfall MY"** stat in the
 - **Icons**: Lucide React
 - **API Integration**: Axios
 - **Data Sources**: 
+  - **Etherscan API** (Ethereum price, gas prices, network activity)
   - CoinGecko API (crypto prices)
   - Apify weather-fetcher (rainfall data)
   - OpenWeatherMap API (weather data - optional)
@@ -72,6 +98,9 @@ npm install
 3. (Optional) Set up environment variables:
 Create a `.env` file in the root directory:
 ```env
+# Etherscan API Key (for real-time ETH price updates)
+VITE_ETHERSCAN_API_KEY=X4BPCXS9KYCRECS5S34PEAUA6YXYGJ9727
+
 # For rainfall analysis with real data
 VITE_APIFY_API_KEY=your_apify_api_key
 
@@ -79,7 +108,7 @@ VITE_APIFY_API_KEY=your_apify_api_key
 VITE_WEATHER_API_KEY=your_openweathermap_api_key
 ```
 
-**Note**: The app works without API keys using mock data. For production use with real-time rainfall data, get a free Apify API key from https://apify.com/
+**Note**: The app works without API keys using mock data. The Etherscan API key is included in the code for immediate use.
 
 4. Start the development server:
 ```bash

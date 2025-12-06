@@ -251,7 +251,7 @@ export async function fetchEthData(): Promise<EnhancedCryptoPrice> {
       }
     };
 
-    console.log(`✅ ETH Data: $${price.toFixed(2)} | Gas: ${gasData.standard} Gwei | Activity: ${networkData.utilization.toFixed(1)}%`);
+    console.log(`✅ ETH Data: $${price.toFixed(2)} | Gas: ${gasData.standard} Gwei | Activity: ${networkData.networkUtilization.toFixed(1)}%`);
     
     return ethData;
   } catch (error) {

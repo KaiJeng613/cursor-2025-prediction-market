@@ -2,15 +2,18 @@
 // In browser, we'll use mock data
 let client: any = null;
 
-try {
-  const { ApifyClient } = await import('apify-client');
-  const APIFY_API_KEY = import.meta.env.VITE_APIFY_API_KEY || '';
-  if (APIFY_API_KEY && typeof window === 'undefined') {
-    client = new ApifyClient({ token: APIFY_API_KEY });
+// Initialize client asynchronously
+const initClient = async () => {
+  try {
+    const { ApifyClient } = await import('apify-client');
+    const APIFY_API_KEY = import.meta.env.VITE_APIFY_API_KEY || '';
+    if (APIFY_API_KEY && typeof window === 'undefined') {
+      client = new ApifyClient({ token: APIFY_API_KEY });
+    }
+  } catch (error) {
+    console.log('Apify client not available in browser, using mock data');
   }
-} catch (error) {
-  console.log('Apify client not available in browser, using mock data');
-}
+};
 
 export interface MalaysianStateRainData {
   state: string;
@@ -66,6 +69,11 @@ export const malaysianStates = [
 export async function fetchMalaysianRainData(): Promise<MalaysianStateRainData[]> {
   try {
     console.log('🌧️ Fetching Malaysian rainfall data...');
+    
+    // Try to initialize client if not already done
+    if (!client) {
+      await initClient();
+    }
     
     // Check if Apify client is available (Node.js environment)
     if (!client) {
